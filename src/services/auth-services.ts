@@ -1,15 +1,8 @@
-import { generate_token } from '@helpers/jwt.helper'
 import { User } from '@models/user'
 import bcrypt from 'bcrypt'
-import { Kafka } from 'kafkajs'
+import { send_email, send_sms } from './two-factor-auth'
+import { generate_random_number } from '@core/utils'
 
-const kafka = new Kafka({
-	clientId: 'auth-service',
-	brokers: [process.env.KAFKA_BROKER],
-})
-
-const producer = kafka.producer()
-producer.connect()
 
 export const register = async (
 	username: string,
@@ -18,25 +11,24 @@ export const register = async (
 	phone: string
 ) => {
 	const hashedPassword = await bcrypt.hash(password, 10)
-	const user = new User({ username, password: hashedPassword, email, phone })
+	let user = new User({ username, password: hashedPassword, email, phone })
+	const otp = generate_random_number(6).toString()
+	user.otp = otp
 	await user.save()
-
-	await producer.send({
-		topic: 'user-registered',
-		messages: [
-			{ value: JSON.stringify({ userId: user._id, phone: user.phone, email: user.email, isVerified: user.is2FAVerified }) },
-		],
-	})
-
+	await send_email(email, otp)
+	// await send_sms(phone, otp)
 	return user
 }
 
 export const login = async (email: string, password: string) => {
-	const user = await User.findOne({ email })
+	let user = await User.findOne({ email })
 	if (!user || !(await bcrypt.compare(password, user.password))) {
 		throw new Error('Invalid credentials')
 	}
-    const user_obj = {_id: user._id.toString()}
-	const token = generate_token(user_obj)
-	return { user, token }
+	const otp = generate_random_number(6).toString()
+	user.otp = otp
+	await user.save()
+	await send_email(email, otp)
+   
+	return user
 }
