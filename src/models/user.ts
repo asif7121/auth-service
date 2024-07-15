@@ -5,7 +5,10 @@ export interface IUser extends Document {
 	password: string
 	email: string
 	phone: string
-	is2FAVerified?: boolean
+	isVerified?: boolean
+	otp?: string
+	secret?: string
+	auth_method?: 'email' | 'phone' | 'authenticator'
 }
 
 const UserSchema: Schema = new Schema({
@@ -28,10 +31,21 @@ const UserSchema: Schema = new Schema({
 		required: true,
 		unique: true,
 	},
-	is2FAVerified: {
+	isVerified: {
 		type: Boolean,
-		default:false
-	}
+		default: false,
+	},
+	otp: {
+		type: String,
+	},
+	secret: {
+		type: String,
+	},
+	auth_method: {
+		type: String,
+		enum: ['email', 'phone', 'authenticator'],
+		default: 'email',
+	},
 })
 
 export const User = model<IUser>('User', UserSchema)
