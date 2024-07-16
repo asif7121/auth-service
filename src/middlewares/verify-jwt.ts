@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
-import { User } from '@models/user.model'
+import { Auth } from '@models/auth'
+
 
 interface JwtPayload {
 	_id: string
@@ -13,7 +14,7 @@ export const verify_token = async (req: Request, res: Response, next: NextFuncti
 			return res.status(400).json({ error: 'Invalid token' })
 		}
 		const decode = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload
-		const user = await User.findById(decode?._id).lean()
+		const user = await Auth.findById(decode?._id).lean()
 		if (!user) {
 			return res.status(400).json({ error: 'Invalid user' })
 		}

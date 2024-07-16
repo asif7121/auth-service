@@ -20,6 +20,6 @@ export const generateTotpQrcode = async (otpauth: string) => {
 	}
 }
 // Verify TOTP token
-export const verifyTotpToken = (token: string, secret: string) => {
+export const verifyTotpToken = (token: string, secret: string):boolean => {
 	return totp.verify({ token, secret })
 }
