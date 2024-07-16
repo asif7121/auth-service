@@ -21,7 +21,8 @@
 			"@middlewares/*": ["middlewares/*"],
 			"@helpers/*": ["helpers/*"],
 			"@jobs/*": ["jobs/*"],
-			"@events/*": ["events/*"]
+			"@events/*": ["events/*"],
+			"@services/*": ["services/*"]
 		},
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,

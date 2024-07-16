@@ -1,6 +1,6 @@
 import { Document, Schema, model } from 'mongoose'
 
-export interface IUser extends Document {
+export interface IAuth extends Document {
 	username: string
 	password: string
 	email: string
@@ -9,9 +9,11 @@ export interface IUser extends Document {
 	otp?: string
 	secret?: string
 	auth_method?: 'email' | 'phone' | 'authenticator'
+	isTwoFAEnabled?: boolean
+	resetPasswordToken?: string
 }
 
-const UserSchema: Schema = new Schema({
+const AuthSchema: Schema = new Schema({
 	username: {
 		type: String,
 		required: true,
@@ -46,6 +48,15 @@ const UserSchema: Schema = new Schema({
 		enum: ['email', 'phone', 'authenticator'],
 		default: 'email',
 	},
+	isTwoFAEnabled: {
+		type: Boolean,
+		default: false,
+	},
+	resetPasswordToken: {
+		type: String,
+		default: undefined
+	},
+	
 })
 
-export const User = model<IUser>('User', UserSchema)
+export const Auth = model<IAuth>('User', AuthSchema)
