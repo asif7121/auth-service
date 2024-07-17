@@ -1,4 +1,3 @@
-import { required } from 'joi'
 import { Document, Schema, model } from 'mongoose'
 
 export interface IAuth extends Document {
@@ -68,4 +67,4 @@ const AuthSchema: Schema = new Schema({
 	versionKey:false
 })
 
-export const Auth = model<IAuth>('User', AuthSchema)
+export const Auth = model<IAuth>('Auth', AuthSchema)
