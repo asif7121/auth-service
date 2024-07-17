@@ -1,6 +1,4 @@
-import { generate_random_number } from '@core/utils'
 import { Auth } from '@models/auth'
-import { send_email, send_sms } from '@services/two-factor-auth'
 import bcrypt from 'bcrypt'
 
 export const login = async (email: string, password: string) => {
