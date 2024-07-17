@@ -1,3 +1,5 @@
+import { profileUpdate } from './update-profile';
+import { twofasend } from './2FA';
 import { updatePhone } from './update-phone';
 import { updateUserPassword } from './update-password';
 import { updateUserEmail } from './update-email';
@@ -20,4 +22,6 @@ export {
     updateUserEmail,
     updateUserPassword,
     updatePhone,
+    twofasend,
+    profileUpdate,
 }
