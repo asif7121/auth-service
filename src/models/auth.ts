@@ -1,3 +1,4 @@
+import { required } from 'joi'
 import { Document, Schema, model } from 'mongoose'
 
 export interface IAuth extends Document {
@@ -11,6 +12,7 @@ export interface IAuth extends Document {
 	auth_method?: 'email' | 'phone' | 'authenticator'
 	isTwoFAEnabled?: boolean
 	resetPasswordToken?: string
+	address: string
 }
 
 const AuthSchema: Schema = new Schema({
@@ -56,7 +58,14 @@ const AuthSchema: Schema = new Schema({
 		type: String,
 		default: undefined
 	},
+	address: {
+		type: String,
+		required: true
+	}
 	
+}, {
+	timestamps: true,
+	versionKey:false
 })
 
 export const Auth = model<IAuth>('User', AuthSchema)

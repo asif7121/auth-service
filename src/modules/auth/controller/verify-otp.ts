@@ -1,28 +1,30 @@
 import { generate_token } from '@helpers/jwt.helper'
 import { Auth } from '@models/auth'
 import { Request, Response } from 'express'
+import { authenticator } from 'otplib'
 import { verifyTotpToken } from 'services/authenticator'
 
 export const verify_user_otp = async (req: Request, res: Response) => {
 	try {
-		const { email, otp, auth_method } = req.body
-		if ([email, otp].some((field: string) => field.trim() === '')) {
+		const { id, otp } = req.body
+		if ([id, otp].some((field: string) => field.trim() === '')) {
 			return res.status(400).json({ error: 'Fields cannot be empty' })
 		}
-		const user = await Auth.findOne({ email })
+		const user = await Auth.findById(id)
 		if (!user) {
 			return res.status(400).json({ error: 'User not found' })
 		}
 		let isOtpVerified = false
-		if (auth_method === 'authenticator') {
-			const isValid = verifyTotpToken(otp, user.secret)
+		if (user.auth_method === 'authenticator') {
+			const token = authenticator.generate(user.secret)
+			const isValid = verifyTotpToken(token, user.secret)
 			if (!isValid) {
 				return res.status(400).json({ error: 'Invalid OTP' })
 			}
 			isOtpVerified = true
 		} else {
 			if (!user.otp) {
-				return res.status(400).json({ error: 'OTP is expired ' })
+				return res.status(400).json({ error: 'OTP is expired' })
 			}
 			// Check if OTP matches
 			if (user.otp !== otp) {
@@ -34,6 +36,7 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 		if (isOtpVerified) {
 			user.isVerified = true
 			user.otp = null // Clear the OTP
+			user.secret = null //Clear the secret
 			const payload = {
 				_id: user._id.toString(),
 			}

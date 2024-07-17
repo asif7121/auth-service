@@ -1,4 +1,4 @@
-import { totp, authenticator } from 'otplib'
+import {  authenticator } from 'otplib'
 import qrcode from 'qrcode'
 
 
@@ -21,5 +21,5 @@ export const generateTotpQrcode = async (otpauth: string) => {
 }
 // Verify TOTP token
 export const verifyTotpToken = (token: string, secret: string):boolean => {
-	return totp.verify({ token, secret })
+	return authenticator.check(token, secret)
 }
