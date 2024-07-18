@@ -1,7 +1,6 @@
 import { transporter } from "@core/config/email"
 import { twilioClient } from "@core/config/sms"
-import { Auth } from '@models/auth'
-import crypto from 'crypto'
+
 
 export const send_sms = async (phone: string, code: string) => {
 	await twilioClient.messages.create({
@@ -21,7 +20,7 @@ export const send_email = async (email: string, code: string) => {
 }
 
 export const sendPasswordResetEmail = async (user:any, token:string) => {
-	const resetUrl = `${process.env.LOCALHOST_URL}/reset-password/${token}`
+	const resetUrl = `${process.env.LOCALHOST_URL}/reset-password?userId=${user._id}&token=${token}`
 	await transporter.sendMail({
 		from: process.env.EMAIL,
 		to: user.email,
@@ -33,15 +32,3 @@ export const sendPasswordResetEmail = async (user:any, token:string) => {
 	})
 }
 
-export const generateResetToken = async (email: string) => {
-	const user = await Auth.findOne({ email })
-	if (!user) throw new Error('No account with that email address exists.')
-		const token = crypto.randomBytes(20).toString('hex')
-	const newUser = await Auth.findByIdAndUpdate(user._id, {
-		resetPasswordToken:token
-	}, {
-		new:true
-	})
-	await sendPasswordResetEmail(newUser, token)
-	return {token:token}
-}

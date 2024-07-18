@@ -1,3 +1,5 @@
+import { verifyNewPhoneOtp } from './verify-phone-otp';
+import { verifyNewEmailOtp } from './verify-email-otp';
 import { profileUpdate } from './update-profile';
 import { twofasend } from './2FA';
 import { updatePhone } from './update-phone';
@@ -24,4 +26,6 @@ export {
     updatePhone,
     twofasend,
     profileUpdate,
+    verifyNewEmailOtp,
+    verifyNewPhoneOtp,
 }
