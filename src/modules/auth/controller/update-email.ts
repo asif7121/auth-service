@@ -6,7 +6,7 @@ import { Request, Response } from 'express'
 export const updateUserEmail = async (req: Request, res: Response) => {
 	try {
 		const { _id } = req.user
-		const newEmail: string = req.body.newEmail
+		const {newEmail} = req.body
 		const user = await Auth.findById(_id)
 		if (!user) {
 			return res.status(400).json({ error: 'Login first..' })
@@ -18,6 +18,7 @@ export const updateUserEmail = async (req: Request, res: Response) => {
 		}
 		const otp = generate_random_number(6).toString()
 		user.otp = otp
+		user.temp_email = newEmail
 		await user.save()
 		await send_email(newEmail, otp)
 		return res

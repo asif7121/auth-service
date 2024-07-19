@@ -35,17 +35,21 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 
 		if (isOtpVerified) {
 			user.isVerified = true
-			user.otp = null // Clear the OTP
-			user.secret = null //Clear the secret
+			user.otp = undefined // Clear the OTP
+			user.secret = undefined //Clear the secret
 			const payload = {
 				_id: user._id.toString(),
 			}
 			const token = generate_token(payload)
 
 			await user.save()
-			return res
-				.status(200)
-				.json({ message: 'OTP verified successfully', user: user._id, token })
+			return res.status(200).json({
+				message: 'OTP verified successfully',
+				data: {
+					_user: user._id,
+					token: token,
+				},
+			})
 		}
 		return res.status(400).json({ error: 'Invalid OTP' })
 	} catch (error) {

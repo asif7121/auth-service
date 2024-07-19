@@ -20,7 +20,7 @@ export const send_email = async (email: string, code: string) => {
 }
 
 export const sendPasswordResetEmail = async (user:any, token:string) => {
-	const resetUrl = `${process.env.LOCALHOST_URL}/reset-password?userId=${user._id}&token=${token}`
+	const resetUrl = `${process.env.LOCALHOST_URL}/reset-password?token=${token}`
 	await transporter.sendMail({
 		from: process.env.EMAIL,
 		to: user.email,
