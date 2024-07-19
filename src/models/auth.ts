@@ -14,6 +14,8 @@ export interface IAuth extends Document {
 	address: string
 	role?: 'admin' | 'superAdmin' | 'user'
 	dob: Date
+	temp_email?: string
+	temp_phone?: string
 }
 
 const AuthSchema: Schema = new Schema(
@@ -72,7 +74,9 @@ const AuthSchema: Schema = new Schema(
 		dob: {
 			type: Date,
 			required: true
-		}
+		},
+		temp_email:{type:String},
+		temp_phone:{type:String},
 	},
 	{
 		timestamps: true,
