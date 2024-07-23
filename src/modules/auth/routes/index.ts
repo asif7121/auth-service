@@ -13,6 +13,8 @@ import {
 	profileUpdate,
 	verifyNewEmailOtp,
 	verifyNewPhoneOtp,
+	emailVerification,
+	verifyEmail,
 } from '@modules/auth/controller'
 import { verify_token } from '@middlewares/verify-jwt'
 
@@ -24,6 +26,8 @@ router.post('/verify-otp', verify_user_otp)
 router.post('/send-otp', twofasend)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetpassword)
+router.post('/verify/email', emailVerification)
+router.post('/verify/email/otp', verifyEmail)
 
 //secure routes
 router.use(verify_token)

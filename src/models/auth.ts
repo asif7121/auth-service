@@ -5,17 +5,18 @@ export interface IAuth extends Document {
 	password: string
 	email: string
 	phone: string
+	isEmailVerified?: boolean
+	isPhoneVerified?: boolean
 	isVerified?: boolean
-	otp?: string
 	secret?: string
-	auth_method?: 'email' | 'phone' | 'authenticator'
+	authMethod?: 'email' | 'phone' | 'authenticator'
 	isTwoFAEnabled?: boolean
 	resetPasswordToken?: string
 	address: string
 	role?: 'admin' | 'superAdmin' | 'user'
 	dob: Date
-	temp_email?: string
-	temp_phone?: string
+	tempEmail?: string
+	tempPhone?: string
 }
 
 const AuthSchema: Schema = new Schema(
@@ -43,13 +44,19 @@ const AuthSchema: Schema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		otp: {
-			type: String,
+		isEmailVerified: {
+			type: Boolean,
+			default: false,
 		},
+		isPhoneVerified: {
+			type: Boolean,
+			default: false,
+		},
+
 		secret: {
 			type: String,
 		},
-		auth_method: {
+		authMethod: {
 			type: String,
 			enum: ['email', 'phone', 'authenticator'],
 			default: 'email',
@@ -69,14 +76,14 @@ const AuthSchema: Schema = new Schema(
 		role: {
 			type: String,
 			enum: ['admin', 'superAdmin', 'user'],
-			default : 'user',
+			default: 'user',
 		},
 		dob: {
 			type: Date,
-			required: true
+			required: true,
 		},
-		temp_email:{type:String},
-		temp_phone:{type:String},
+		tempEmail: { type: String },
+		tempPhone: { type: String },
 	},
 	{
 		timestamps: true,
