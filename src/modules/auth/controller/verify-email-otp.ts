@@ -1,4 +1,5 @@
 import { Auth } from '@models/auth'
+import { Otp } from '@models/otp'
 import { Request, Response } from 'express'
 
 export const verifyNewEmailOtp = async (req: Request, res: Response) => {
@@ -6,12 +7,14 @@ export const verifyNewEmailOtp = async (req: Request, res: Response) => {
 		const { _id } = req.user
 		const { email, otp } = req.body
 		const user = await Auth.findById(_id)
+		const code = await Otp.findOne({ _user: _id })
 
-		if (user.otp === otp && user.temp_email === email) {
+		if (code.otpCode === otp && user.tempEmail === email) {
 			user.email = email
-			user.otp = undefined
-			user.temp_email = undefined
+			code.otpCode = null
+			user.tempEmail = undefined
 			await user.save()
+			await code.save()
 			return res
 				.status(200)
                 .json({

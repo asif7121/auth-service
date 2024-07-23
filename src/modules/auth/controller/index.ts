@@ -1,3 +1,4 @@
+import { emailVerification, verifyEmail } from './emailVerification';
 import { verifyNewPhoneOtp } from './verify-phone-otp';
 import { verifyNewEmailOtp } from './verify-email-otp';
 import { profileUpdate } from './update-profile';
@@ -28,4 +29,6 @@ export {
     profileUpdate,
     verifyNewEmailOtp,
     verifyNewPhoneOtp,
+    emailVerification,
+    verifyEmail,
 }

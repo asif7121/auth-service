@@ -1,13 +1,16 @@
 import { generate_random_number } from '@core/utils'
 import { Auth } from '@models/auth'
+import { Otp } from '@models/otp'
 import { send_email } from '@services/two-factor-auth'
 import { Request, Response } from 'express'
 
 export const updateUserEmail = async (req: Request, res: Response) => {
 	try {
 		const { _id } = req.user
-		const {newEmail} = req.body
+		const { newEmail } = req.body
+		const otp = generate_random_number(6).toString()
 		const user = await Auth.findById(_id)
+		const code = await Otp.findOne({_user: _id})
 		if (!user) {
 			return res.status(400).json({ error: 'Login first..' })
 		}
@@ -16,10 +19,10 @@ export const updateUserEmail = async (req: Request, res: Response) => {
 				.status(400)
 				.json({ error: 'Existing email and entered email cannot be same' })
 		}
-		const otp = generate_random_number(6).toString()
-		user.otp = otp
-		user.temp_email = newEmail
+		code.otpCode = otp
+		user.tempEmail = newEmail
 		await user.save()
+		await code.save()
 		await send_email(newEmail, otp)
 		return res
 			.status(200)
