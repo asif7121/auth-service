@@ -2,11 +2,11 @@ import { transporter } from "@core/config/email"
 import { twilioClient } from "@core/config/sms"
 
 
-export const send_sms = async (phone: string, code: string) => {
+export const send_sms = async (countryCode: string,phone: string, code: string) => {
 	await twilioClient.messages.create({
 		body: `Your verification code is ${code}`,
 		from: process.env.TWILIO_PHONE_NUMBER,
-		to: `+91${phone}`,
+		to: `${countryCode}${phone}`,
 	})
 }
 

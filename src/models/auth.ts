@@ -5,18 +5,22 @@ export interface IAuth extends Document {
 	password: string
 	email: string
 	phone: string
-	isEmailVerified?: boolean
-	isPhoneVerified?: boolean
-	isVerified?: boolean
+	countryCode: string
+	isEmailVerified: boolean
+	isPhoneVerified: boolean
+	isVerified: boolean
+	isBlocked: boolean
+	isActive: boolean
 	secret?: string
-	authMethod?: 'email' | 'phone' | 'authenticator'
+	authMethod: 'email' | 'phone' | 'authenticator'
 	isTwoFAEnabled?: boolean
 	resetPasswordToken?: string
-	address: string
-	role?: 'admin' | 'superAdmin' | 'user'
+	address?: [object]
+	role: 'user' | 'seller'
 	dob: Date
 	tempEmail?: string
 	tempPhone?: string
+	tempCountryCode?: string
 }
 
 const AuthSchema: Schema = new Schema(
@@ -25,22 +29,37 @@ const AuthSchema: Schema = new Schema(
 			type: String,
 			required: true,
 			unique: true,
+			toLowerCase: true,
 		},
 		password: {
 			type: String,
 			required: true,
+			toLowerCase: true,
 		},
 		email: {
 			type: String,
 			required: true,
 			unique: true,
+			toLowerCase: true,
 		},
 		phone: {
 			type: String,
 			required: true,
 			unique: true,
 		},
+		countryCode: {
+			type: String,
+			required: true,
+		},
 		isVerified: {
+			type: Boolean,
+			default: false,
+		},
+		isActive: {
+			type: Boolean,
+			default: false,
+		},
+		isBlocked: {
 			type: Boolean,
 			default: false,
 		},
@@ -69,13 +88,31 @@ const AuthSchema: Schema = new Schema(
 			type: String,
 			default: undefined,
 		},
-		address: {
-			type: String,
-			required: true,
-		},
+		address: [
+			{
+				street: {
+					type: String,
+				},
+				area: {
+					type: String,
+				},
+				city: {
+					type: String,
+				},
+				zipcode: {
+					type: String,
+				},
+				state: {
+					type: String,
+				},
+				country: {
+					type: String,
+				},
+			},
+		],
 		role: {
 			type: String,
-			enum: ['admin', 'superAdmin', 'user'],
+			enum: ['seller', 'user'],
 			default: 'user',
 		},
 		dob: {
@@ -84,11 +121,13 @@ const AuthSchema: Schema = new Schema(
 		},
 		tempEmail: { type: String },
 		tempPhone: { type: String },
+		tempCountryCode: { type: String },
 	},
 	{
 		timestamps: true,
 		versionKey: false,
 	}
 )
+
 
 export const Auth = model<IAuth>('User', AuthSchema)

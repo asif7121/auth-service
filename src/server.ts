@@ -2,7 +2,6 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { connect_db } from '@core/database'
 import router from './app.routes'
-import { connectRabbitMQ } from '@services/rabbitmq'
 dotenv.config()
 
 
@@ -20,4 +19,3 @@ app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)
 })
 
-connectRabbitMQ()

@@ -1,6 +1,7 @@
-import { emailVerification, verifyEmail } from './emailVerification';
-import { verifyNewPhoneOtp } from './verify-phone-otp';
-import { verifyNewEmailOtp } from './verify-email-otp';
+import { toggleTwoFA } from './toggleTwoFA';
+import { changeTwoFA } from './change2FA';
+import { phoneVerification } from './phoneVerification';
+import { emailVerification } from './emailVerification';
 import { profileUpdate } from './update-profile';
 import { twofasend } from './2FA';
 import { updatePhone } from './update-phone';
@@ -27,8 +28,9 @@ export {
     updatePhone,
     twofasend,
     profileUpdate,
-    verifyNewEmailOtp,
-    verifyNewPhoneOtp,
     emailVerification,
-    verifyEmail,
+    phoneVerification,
+    changeTwoFA,
+    toggleTwoFA,
+    
 }
