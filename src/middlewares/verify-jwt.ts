@@ -5,6 +5,7 @@ import { Auth } from '@models/auth'
 
 interface JwtPayload {
 	_id: string
+	role: string
 }
 
 export const verify_token = async (req: Request, res: Response, next: NextFunction) => {

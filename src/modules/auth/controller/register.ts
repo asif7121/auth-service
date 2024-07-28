@@ -1,10 +1,12 @@
 import { Auth } from '@models/auth'
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
+import { isValidDate, isValidEmail } from '@core/utils'
+
 
 export const register_user = async (req: Request, res: Response) => {
 	try {
-		const { username, password, email, phone, address, dob } = req.body
+		const { username, password, email, phone, countryCode, dob, role } = req.body
 		const hashedPassword = await bcrypt.hash(password, 10)
 		const existingUser = await Auth.findOne({
 			$or: [{ email: email }, { phone: phone }, { username: username }],
@@ -20,13 +22,23 @@ export const register_user = async (req: Request, res: Response) => {
 				return res.status(400).json({ error: 'Cannot use existing username' })
 			}
 		}
+		// Validate DOB using moment
+		if (!isValidDate(dob)) {
+			return res.status(400).json({ error: 'Invalid date of birth' })
+		}
+
+		// Validate email using Regex
+		if (!isValidEmail(email)) {
+			return res.status(400).json({ error: 'Invalid email format' })
+		}
 		const user = await Auth.create({
 			username,
 			password: hashedPassword,
 			email,
 			phone,
-			address,
+			countryCode,
 			dob,
+			role,
 		})
 		return res.status(201).json({ _user: user._id })
 	} catch (error) {
