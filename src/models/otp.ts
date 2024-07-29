@@ -10,8 +10,8 @@ export enum OtpTypes {
 }
 interface IOtp extends Document {
 	otp?: string
-	otpExpireAt: Date
-	purpose:OtpTypes
+	otpExpireAt?: Date
+	purpose?:OtpTypes
 	_user: Schema.Types.ObjectId
 }
 
@@ -22,12 +22,10 @@ const otpSchema: Schema = new Schema(
 		},
 		otpExpireAt: {
 			type: Date,
-			required: true,
 		},
 		purpose: {
 			type: String,
 			enum: Object.values(OtpTypes),
-			required: true,
 		},
 		_user: {
 			type: Schema.Types.ObjectId,

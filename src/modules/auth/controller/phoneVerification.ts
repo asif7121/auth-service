@@ -1,4 +1,4 @@
-import { generate_random_number, otpExpire } from '@core/utils'
+import { generate_random_number } from '@core/utils'
 import { Auth } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { send_sms } from '@services/two-factor-auth'
@@ -9,13 +9,11 @@ export const phoneVerification = async (req: Request, res: Response) => {
 		const { phone } = req.body
 		const user = await Auth.findOne({ phone: phone })
 		const code = generate_random_number(6).toString()
-		
-		
 
 		if (!user) {
 			return res.status(404).json({ error: 'No user exists with the provided phone' })
 		}
-
+		const otpExpire = new Date(Date.now() + 5 * 60 * 1000)
 		const otpData = await Otp.findOne({ _user: user._id })
 		if (otpData) {
 			otpData.otp = code
