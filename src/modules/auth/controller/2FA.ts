@@ -1,4 +1,4 @@
-import { generate_random_number, otpExpire } from '@core/utils'
+import { generate_random_number} from '@core/utils'
 import { Auth } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { generateTotpQrcode, generateTotpSecret } from '@services/authenticator'
@@ -19,15 +19,18 @@ export const twofasend = async (req: Request, res: Response) => {
 		if (!user) {
 			return res.status(400).json({ error: 'No user found with this id..' })
 		}
+		 const otpExpire = new Date(Date.now() + 5 * 60 * 1000)
 
 		if (authMethod === 'email' || authMethod === 'phone') {
 			
 			const checkUserOtp = await Otp.findOne({ _user: user._id })
-
+			// console.log(otpExpire.toLocaleString())
 			if (checkUserOtp) {
 				checkUserOtp.otp = code
 				checkUserOtp.purpose = OtpTypes.Signup
 				checkUserOtp.otpExpireAt = otpExpire
+				console.log(`otpExipre:  ${otpExpire.toLocaleString()}`)
+				console.log(`data otp:  ${checkUserOtp.otpExpireAt.toLocaleString()}`)
 				await checkUserOtp.save()
 			} else {
 				await Otp.create({

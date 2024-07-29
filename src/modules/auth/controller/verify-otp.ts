@@ -9,7 +9,7 @@ import { isValidObjectId } from 'mongoose'
 export const verify_user_otp = async (req: Request, res: Response) => {
 	try {
 		const { id, otp, purpose } = req.body
-		if ([id, otp, purpose].some((field: string) => field.trim() === '')) {
+		if ([id, otp].some((field: string) => field.trim() === '')) {
 			return res.status(400).json({ error: 'Fields cannot be empty' })
 		}
 		if (!isValidObjectId(id)) {
@@ -20,12 +20,12 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: 'User not found' })
 		}
 		const code = await Otp.findOne({ _user: user._id, purpose: purpose })
-
+		// console.log(code)
 		if (!Object.values(OtpTypes).includes(purpose)) {
 			return res.status(400).json({ error: 'Invalid OTP purpose' })
 		}
-		if (!code || code.otpExpireAt < new Date()) {
-			return res.status(400).json({ error: 'OTP expired or not found' })
+		if (code.otpExpireAt < new Date()) {
+			return res.status(400).json({ error: 'OTP expired...' })
 		}
 
 		let isOtpVerified = false
@@ -36,6 +36,7 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 			if (!isValid) {
 				return res.status(400).json({ error: 'Invalid OTP' })
 			}
+			user.isTwoFAEnabled = true
 			isOtpVerified = true
 		} else {
 			if (code.otp === otp) {
@@ -58,7 +59,6 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 						break
 					case OtpTypes.Signup:
 						user.isVerified = true
-						user.isTwoFAEnabled = true
 						break
 					case OtpTypes.Login:
 						user.isVerified = true
@@ -75,16 +75,22 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 		}
 
 		if (isOtpVerified) {
-			code.otp = null // Clear the OTP
-			user.secret = undefined // Clear the secret if using authenticator
-			user.isActive = true
-			user.isEmailVerified = true
+			if (user.authMethod === 'email') {
+				user.isEmailVerified = true
+				await user.save()
+			} else if (user.authMethod === 'phone') {
+				user.isPhoneVerified = true
+				await user.save()
+			}
 			const payload = {
 				_id: user._id.toString(),
 				role: user.role,
 			}
 			const token = generate_token(payload)
-
+			code.otp = null // Clear the OTP
+			code.otpExpireAt = null
+			user.secret = undefined // Clear the secret if using authenticator
+			user.isActive = true
 			await user.save()
 			await code.save()
 			return res.status(200).json({

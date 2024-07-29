@@ -14,10 +14,6 @@ export function generate_random_number(length: number) {
 }
 
 
-export const otpExpire = new Date(Date.now() + 5 * 60 * 1000)
-
-
-
 export const isValidDate = (dateString: string) => {
 	return moment(dateString, 'YYYY-MM-DD', true).isValid()
 }

@@ -29,18 +29,17 @@ const AuthSchema: Schema = new Schema(
 			type: String,
 			required: true,
 			unique: true,
-			toLowerCase: true,
+			lowercase: true,
 		},
 		password: {
 			type: String,
 			required: true,
-			toLowerCase: true,
 		},
 		email: {
 			type: String,
 			required: true,
 			unique: true,
-			toLowerCase: true,
+			lowercase: true,
 		},
 		phone: {
 			type: String,
