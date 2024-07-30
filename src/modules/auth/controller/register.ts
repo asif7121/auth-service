@@ -2,6 +2,7 @@ import { Auth } from '@models/auth'
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import { isValidDate, isValidEmail } from '@core/utils'
+import { publishMessage } from '@services/rabbitmq'
 
 
 export const register_user = async (req: Request, res: Response) => {
@@ -31,7 +32,7 @@ export const register_user = async (req: Request, res: Response) => {
 		if (!isValidEmail(email)) {
 			return res.status(400).json({ error: 'Invalid email format' })
 		}
-		const user = await Auth.create({
+		const user = new Auth({
 			username,
 			password: hashedPassword,
 			email,
@@ -40,6 +41,10 @@ export const register_user = async (req: Request, res: Response) => {
 			dob,
 			role,
 		})
+		await user.save()
+		if (user.role === 'seller') {
+			publishMessage('seller', JSON.stringify({userId:user._id, email:user.email}))
+		}
 		return res.status(201).json({ _user: user._id })
 	} catch (error) {
 		console.log(error)

@@ -13,7 +13,14 @@ export const updateUserEmail = async (req: Request, res: Response) => {
 		if (!isValidEmail(email)) {
 			return res.status(400).json({ error: 'Invalid email format' })
 		}
-
+		const existingUserWithThisEmail = await Auth.findOne({ email: email })
+		if (existingUserWithThisEmail) {
+			return res
+				.status(400)
+				.json({
+					error: 'You cannot use email that has been used by any other user in our platform.',
+				})
+		}
 		const otp = generate_random_number(6).toString()
 
 		const user = await Auth.findById(_id)
@@ -34,7 +41,7 @@ export const updateUserEmail = async (req: Request, res: Response) => {
 		}
 
 		const otpData = await Otp.findOne({ _user: _id })
-		
+
 		if (otpData) {
 			otpData.otp = otp
 			otpData.purpose = OtpTypes.UpdateEmail

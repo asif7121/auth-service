@@ -8,7 +8,12 @@ export const updatePhone = async (req: Request, res: Response) => {
 	try {
 		const { _id } = req.user
 		const { countryCode, phone } = req.body
-
+		const existingUserWithThisPhone = await Auth.findOne({ phone: phone })
+		if (existingUserWithThisPhone) {
+			return res.status(400).json({
+				error: 'You cannot use phone that has been used by any other user in our platform.',
+			})
+		}
 		const user = await Auth.findById(_id)
 		if (!user) {
 			return res.status(400).json({ error: 'Login first..' })
