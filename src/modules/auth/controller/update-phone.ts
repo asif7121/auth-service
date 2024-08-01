@@ -1,5 +1,5 @@
 import { generate_random_number } from '@core/utils'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { send_sms } from '@services/two-factor-auth'
 import { Request, Response } from 'express'
@@ -8,13 +8,13 @@ export const updatePhone = async (req: Request, res: Response) => {
 	try {
 		const { _id } = req.user
 		const { countryCode, phone } = req.body
-		const existingUserWithThisPhone = await Auth.findOne({ phone: phone })
+		const existingUserWithThisPhone = await User.findOne({ phone: phone })
 		if (existingUserWithThisPhone) {
 			return res.status(400).json({
 				error: 'You cannot use phone that has been used by any other user in our platform.',
 			})
 		}
-		const user = await Auth.findById(_id)
+		const user = await User.findById(_id)
 		if (!user) {
 			return res.status(400).json({ error: 'Login first..' })
 		}

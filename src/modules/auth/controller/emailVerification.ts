@@ -1,5 +1,5 @@
 import { generate_random_number, isValidEmail} from '@core/utils'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { send_email } from '@services/two-factor-auth'
 import { Request, Response } from 'express'
@@ -12,7 +12,7 @@ export const emailVerification = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: 'Invalid email format' })
 		}
 
-		const user = await Auth.findOne({ email })
+		const user = await User.findOne({ email })
 		if (!user) {
 			return res.status(404).json({ error: 'No user exists with the provided email' })
 		}

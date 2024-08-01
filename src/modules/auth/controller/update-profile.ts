@@ -1,5 +1,5 @@
 import { isValidDate } from '@core/utils'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Request, Response } from 'express'
 
 export const profileUpdate = async (req: Request, res: Response) => {
@@ -9,7 +9,7 @@ export const profileUpdate = async (req: Request, res: Response) => {
 		if (!isValidDate(dob)) {
 			return res.status(400).json({ error: 'Invalid date of birth' })
 		}
-		const user = await Auth.findById(_id).select(
+		const user = await User.findById(_id).select(
 			'-password -resetPasswordToken -auth_method -secret -tempEmail -tempPhone -tempCountryCode '
 		)
 		if (address !== undefined) user.address = address

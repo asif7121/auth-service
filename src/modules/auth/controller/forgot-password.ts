@@ -1,4 +1,4 @@
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Request, Response } from 'express'
 import crypto from 'crypto'
 import { sendPasswordResetEmail } from '@services/two-factor-auth'
@@ -6,7 +6,7 @@ import { sendPasswordResetEmail } from '@services/two-factor-auth'
 export const forgotPassword = async (req: Request, res: Response) => {
 	try {
 		const { email } = req.body
-		const user = await Auth.findOne({ email })
+		const user = await User.findOne({ email })
 		if (!user) {
 			return res.status(400).json({ error: 'No account exists with provided email address.' })
 		}

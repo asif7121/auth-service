@@ -1,4 +1,4 @@
-import { Auth } from "@models/auth";
+import { User } from "@models/auth";
 import { Request, Response } from "express";
 
 
@@ -7,7 +7,7 @@ import { Request, Response } from "express";
 export const profileDetails = async (req:Request, res:Response) => {
 	try {
 		const { _id } = req.user;
-		const user = await Auth.findById(_id).select('-password -resetPasswordToken')
+		const user = await User.findById(_id).select('-password -resetPasswordToken')
 		if (!user) {
 			return res.status(400).json({error: 'You are not authenticated to access this info..'})
 		}

@@ -1,5 +1,5 @@
 import { generate_random_number} from '@core/utils'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { generateTotpQrcode, generateTotpSecret } from '@services/authenticator'
 import { send_email, send_sms } from '@services/two-factor-auth'
@@ -15,7 +15,7 @@ export const twofasend = async (req: Request, res: Response) => {
 			return res.status(400).json({ error: 'Invalid ObjectId..' })
 		}
 
-		const user = await Auth.findById(id)
+		const user = await User.findById(id)
 		if (!user) {
 			return res.status(400).json({ error: 'No user found with this id..' })
 		}

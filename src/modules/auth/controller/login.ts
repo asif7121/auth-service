@@ -1,4 +1,4 @@
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import { send_email, send_sms } from '@services/two-factor-auth'
@@ -14,7 +14,7 @@ export const login_user = async (req: Request, res: Response) => {
 		if (!isValidEmail(email)) {
 			return res.status(400).json({ error: 'Invalid email format' })
 		}
-		const user = await Auth.findOne({ email: email })
+		const user = await User.findOne({ email: email })
 		if (!user) {
 			return res.status(400).json({ error: 'Invalid credentials!' })
 		}

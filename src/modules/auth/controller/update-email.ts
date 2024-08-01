@@ -1,5 +1,5 @@
 import { generate_random_number, isValidEmail } from '@core/utils'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { send_email } from '@services/two-factor-auth'
 import { Request, Response } from 'express'
@@ -13,7 +13,7 @@ export const updateUserEmail = async (req: Request, res: Response) => {
 		if (!isValidEmail(email)) {
 			return res.status(400).json({ error: 'Invalid email format' })
 		}
-		const existingUserWithThisEmail = await Auth.findOne({ email: email })
+		const existingUserWithThisEmail = await User.findOne({ email: email })
 		if (existingUserWithThisEmail) {
 			return res
 				.status(400)
@@ -23,7 +23,7 @@ export const updateUserEmail = async (req: Request, res: Response) => {
 		}
 		const otp = generate_random_number(6).toString()
 
-		const user = await Auth.findById(_id)
+		const user = await User.findById(_id)
 		if (!user) {
 			return res.status(400).json({ error: 'Login first..' })
 		}

@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { Auth } from "@models/auth"
+import { User } from "@models/auth"
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 
@@ -10,7 +10,7 @@ export const resetpassword = async (req:Request, res:Response) => {
 		const { newPassword } = req.body
 		 const resetToken = token.toString()
 			const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex')
-		const user = await Auth.findOne({
+		const user = await User.findOne({
 			resetPasswordToken: hashedToken,
 		})
 		if (!user) {

@@ -10,6 +10,7 @@ export interface IAuth extends Document {
 	isPhoneVerified: boolean
 	isVerified: boolean
 	isBlocked: boolean
+	_blockedBy: Schema.Types.ObjectId
 	isActive: boolean
 	secret?: string
 	authMethod: 'email' | 'phone' | 'authenticator'
@@ -61,6 +62,10 @@ const AuthSchema: Schema = new Schema(
 		isBlocked: {
 			type: Boolean,
 			default: false,
+		},
+		_blockedBy: {
+			type: Schema.Types.ObjectId,
+			default: undefined,
 		},
 		isEmailVerified: {
 			type: Boolean,
@@ -128,5 +133,4 @@ const AuthSchema: Schema = new Schema(
 	}
 )
 
-
-export const Auth = model<IAuth>('User', AuthSchema)
+export const User = model<IAuth>('User', AuthSchema)

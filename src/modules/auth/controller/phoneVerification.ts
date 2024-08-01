@@ -1,5 +1,5 @@
 import { generate_random_number } from '@core/utils'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { send_sms } from '@services/two-factor-auth'
 import { Request, Response } from 'express'
@@ -7,7 +7,7 @@ import { Request, Response } from 'express'
 export const phoneVerification = async (req: Request, res: Response) => {
 	try {
 		const { phone } = req.body
-		const user = await Auth.findOne({ phone: phone })
+		const user = await User.findOne({ phone: phone })
 		const code = generate_random_number(6).toString()
 
 		if (!user) {

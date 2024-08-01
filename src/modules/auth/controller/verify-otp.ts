@@ -1,5 +1,5 @@
 import { generate_token } from '@helpers/jwt.helper'
-import { Auth } from '@models/auth'
+import { User } from '@models/auth'
 import { Otp, OtpTypes } from '@models/otp'
 import { Request, Response } from 'express'
 import { authenticator } from 'otplib'
@@ -15,7 +15,7 @@ export const verify_user_otp = async (req: Request, res: Response) => {
 		if (!isValidObjectId(id)) {
 			return res.status(400).json({ error: 'Invalid ObjectId.' })
 		}
-		const user = await Auth.findById(id)
+		const user = await User.findById(id)
 		if (!user) {
 			return res.status(400).json({ error: 'User not found' })
 		}

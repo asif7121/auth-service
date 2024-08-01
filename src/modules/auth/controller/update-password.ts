@@ -1,4 +1,4 @@
-import { Auth } from "@models/auth";
+import { User } from "@models/auth";
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt'
 
@@ -7,7 +7,7 @@ export const updateUserPassword = async (req:Request, res:Response) => {
     try {
         const { _id } = req.user
         const { oldPass, newPass } = req.body
-        const user = await Auth.findById(_id)
+        const user = await User.findById(_id)
 		if (!user) {
 			return res.status(400).json({error: 'Invalid user request'})
 		}
